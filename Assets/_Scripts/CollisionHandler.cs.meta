@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 25b26e8fdfbe2844c9e8634a0430f153
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - PREFAB_DeathFX: {fileID: 8062233056702233436, guid: 358164511f2c2a342a14624f419f2737,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
