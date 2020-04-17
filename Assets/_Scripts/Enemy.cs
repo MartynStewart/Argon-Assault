@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private GameObject deathFX;
+    public int ScoreValue = 2000;
     public GameObject PREFAB_DeathFX;
+    private bool isDead = false;
+    private ScoreBoard scoreBoard;
 
     void Start() {
-        
+
+        scoreBoard = FindObjectOfType<ScoreBoard>();
         CreateParts();
 
     }
@@ -24,9 +27,14 @@ public class Enemy : MonoBehaviour
     }
 
     private void OnParticleCollision(GameObject other) {
-        deathFX = (GameObject)Instantiate(PREFAB_DeathFX, transform.position, Quaternion.identity);
-        deathFX.SetActive(true);
-        Destroy(gameObject, 1f);            //Destroy Enemy
+        if (!isDead) {
+            isDead = true;
+            scoreBoard.IncrementScore(ScoreValue);
+            GameObject deathFX = (GameObject)Instantiate(PREFAB_DeathFX, transform.position, Quaternion.identity);
+            deathFX.transform.parent = GameObject.Find("SpawnedAtRunTime").transform;
+            deathFX.SetActive(true);
+            Destroy(gameObject, 1f);            //Destroy Enemy
+        }
     }
 
 }
