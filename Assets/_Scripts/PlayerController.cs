@@ -18,12 +18,20 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] float controlRollFactor = -10f;
     [SerializeField] float controlPitchFactor = -20f;
 
+    private ParticleSystem[] guns;
+    private ScoreBoard scoreBoard;
+
     float xThrow, yThrow;
     bool isControlEnabled = true;
-
+    bool isFiring = false;
+    private int missiles = 5;
 
     // Use this for initialization
     void Start() {
+        guns = transform.GetComponentsInChildren<ParticleSystem>();
+        scoreBoard = FindObjectOfType<ScoreBoard>();
+        scoreBoard.ChangeMissiles(missiles);
+
     }
 
     // Update is called once per frame
@@ -31,7 +39,9 @@ public class PlayerController : MonoBehaviour {
         if (isControlEnabled) {
             ProcessTranslation();
             ProcessRotation();
+            ProcessFiring();
         }
+        scoreBoard.ChangeMissiles(missiles);
     }
 
     private void ProcessRotation() {
@@ -60,6 +70,40 @@ public class PlayerController : MonoBehaviour {
         float clampedYPos = Mathf.Clamp(rawYPos, -yRange, yRange);
 
         transform.localPosition = new Vector3(clampedXPos, clampedYPos, transform.localPosition.z);
+    }
+
+    private void ProcessFiring() {
+        if (Input.GetButton("Fire1")) {
+            EnableGuns();
+        } else {
+            DisableGuns();
+        }
+
+        if (Input.GetButton("Fire2")) {
+            AttemptMissileFire();
+        }
+    }
+
+    private void EnableGuns() {
+        isFiring = true;
+        foreach (ParticleSystem gun in guns) {
+            gun.gameObject.SetActive(true);
+        }
+    }
+
+    private void DisableGuns() {
+        isFiring = false;
+        foreach (ParticleSystem gun in guns) {
+            gun.gameObject.SetActive(false);
+        }
+    }
+
+    private void AttemptMissileFire() {
+        //Check player missile count
+        //If 0 then exit
+        //Spawn missile 
+        //Update scoreboard
+        scoreBoard.ChangeMissiles(missiles);
     }
 
     private void OnPlayerDeath() {

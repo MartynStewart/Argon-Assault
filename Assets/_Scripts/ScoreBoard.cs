@@ -7,13 +7,23 @@ public class ScoreBoard : MonoBehaviour
 {
     private int score = 0;
     private Text scoreText;
+    private Text missileText;
+    private Text livesText;
 
     [SerializeField] int hitScore;
 
     void Start() {
+
+        //Handle_Score
         scoreText = GameObject.Find("PointsTxt").GetComponent<Text>();
-        score += 2000;
         UpdateScore();
+
+        //Handle_Missiles
+        missileText = GameObject.Find("/Canvas/MissileImg/MissileTxt").GetComponent<Text>();
+        Debug.Log(missileText.text);
+
+        //Handle_Lives
+
     }
 
     private void UpdateScore() {
@@ -26,5 +36,18 @@ public class ScoreBoard : MonoBehaviour
         score += increment;
         Debug.Log("Updateding score with: " + increment + " Score is now: " + score);
         UpdateScore();
+    }
+
+    public void ChangeMissiles(int missCount) {
+        if (missCount < 0) missCount = 0;
+        string outString = missCount + "x";
+
+        Debug.Log("Debugging String: " + outString);
+        missileText.text = outString;
+    }
+
+    public void ChangeLives(int count) {
+        if (count < 0) count = 0;
+        livesText.text = count.ToString();
     }
 }
