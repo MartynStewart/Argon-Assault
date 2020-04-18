@@ -31,7 +31,6 @@ public class Enemy : MonoBehaviour
     private void OnParticleCollision(GameObject other) {
         if (!isDead) {
             maxHits--;
-            Debug.Log("I've been hit, remaining hits: " + maxHits);
             if(maxHits<=0) EnemyKilled();
         }
     }
@@ -42,6 +41,6 @@ public class Enemy : MonoBehaviour
         GameObject deathFX = (GameObject)Instantiate(PREFAB_DeathFX, transform.position, Quaternion.identity);
         deathFX.transform.parent = GameObject.Find("SpawnedAtRunTime").transform;
         deathFX.SetActive(true);
-        Destroy(gameObject, 1f);            //Destroy Enemy
+        Destroy(gameObject);            //Destroy Enemy
     }
 }

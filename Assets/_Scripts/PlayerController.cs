@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour {
             DisableGuns();
         }
 
-        if (Input.GetButton("Fire2")) {
+        if (Input.GetButtonDown("Fire2")) {
             AttemptMissileFire();
         }
     }
@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour {
 
         //Spawn missile 
         //Update scoreboard
+        missiles--;
         scoreBoard.ChangeMissiles(missiles);
     }
 
