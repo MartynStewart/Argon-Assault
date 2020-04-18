@@ -16,26 +16,23 @@ public class CollisionHandler : MonoBehaviour
                         private     bool            isKillable = true;
                         private     float           rekillTime;             //Stores when player will be killable again
                         private     float           zOffset;                //Player position relative to camera
+                        
+
+                        public      GameObject      PREFAB_DeathFX;         //Prefab holding particle effects for death
+    [Range(0.5f, 10)]   public      float           invunTime = 2f;         //How long after respawn player remains invulnerable
+    [Range(0, 10)]      public      float           flashRate = 4f;         //Rate of flashing per second
                         public      Color           invunColour;
-                        private     Color           invunColour2 = new Color(255,255,0,100);
 
-                        public      GameObject      PREFAB_DeathFX;
-    [Range(0.5f, 10)]   public      float           invunTime = 2f;
-
-    [Range(0, 10)]       public      float           flashRate = 4f; //Rate of flashing per second
-
-    // Start is called before the first frame update
     void Start() {
-        
         playerMesh = GetComponent<MeshRenderer>();
         scoreBoard = FindObjectOfType<ScoreBoard>();
         myMat = GetComponent<MeshRenderer>().materials[0];
         baseColour = myMat.color;
         scoreBoard.ChangeLives(lives);
         zOffset = transform.localPosition.z;
+        invunColour = invunColour * 255;
     }
 
-    // Update is called once per frame
     void Update(){
         if (!isKillable) CheckKillableState();
     }
@@ -65,15 +62,7 @@ public class CollisionHandler : MonoBehaviour
             myMat.color = baseColour;
         } else {
             int timeLeft = Mathf.FloorToInt((rekillTime - Time.time) / (1/flashRate)) % 2;
-            //Debug.Log("Flashing for " + (rekillTime - Time.time) + "s. Tleft: " + timeLeft);
-            myMat.color = timeLeft != 0 ? invunColour2 : baseColour;
-            /*
-        if(timeLeft == 0) {
-                myMat.color = baseColour;
-            } else {
-                myMat.color = invunColour;
-         }*/
-
+            myMat.color = timeLeft != 0 ? invunColour : baseColour;
         }
     }
 
