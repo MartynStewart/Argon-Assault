@@ -12,7 +12,7 @@ public class ScoreBoard : MonoBehaviour
 
     [SerializeField] int hitScore;
 
-    void Start() {
+    void Awake() {
 
         //Handle_Score
         scoreText = GameObject.Find("PointsTxt").GetComponent<Text>();
@@ -20,10 +20,9 @@ public class ScoreBoard : MonoBehaviour
 
         //Handle_Missiles
         missileText = GameObject.Find("/Canvas/MissileImg/MissileTxt").GetComponent<Text>();
-        Debug.Log(missileText.text);
 
         //Handle_Lives
-
+        livesText = GameObject.Find("/Canvas/LivesOverlay/LivesImg/LivesTxt").GetComponent<Text>();
     }
 
     private void UpdateScore() {
@@ -32,22 +31,19 @@ public class ScoreBoard : MonoBehaviour
 
     public void IncrementScore(int increment) {
         if (increment < 1) return;
-
         score += increment;
-        Debug.Log("Updateding score with: " + increment + " Score is now: " + score);
         UpdateScore();
     }
 
     public void ChangeMissiles(int missCount) {
         if (missCount < 0) missCount = 0;
         string outString = missCount + "x";
-
-        Debug.Log("Debugging String: " + outString);
         missileText.text = outString;
     }
 
-    public void ChangeLives(int count) {
-        if (count < 0) count = 0;
-        livesText.text = count.ToString();
+    public void ChangeLives(int livCount) {
+        if (livCount < 0) livCount = 0;
+        string outString = livCount + "x";
+        livesText.text = outString;
     }
 }

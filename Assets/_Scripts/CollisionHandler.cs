@@ -5,31 +5,86 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
-    [SerializeField] float levelLoadDelay = 1f;
+                        private     GameObject      deathFX;                //Holds particle gameObject created when player dies
+                        private     MeshRenderer    playerMesh;             //Meshrendered so we can adjust player colour
+                        private     ScoreBoard      scoreBoard;
+                        private     Material        myMat;                  //Ref point for setting player colour
+                        private     Color           baseColour;             //The initial colour as set by artists to reset back to
 
-    private GameObject deathFX;
-    private MeshRenderer playerMesh;
+    [SerializeField]    private     float           levelLoadDelay = 1f;
+                        private     int             lives = 3;              //TODO: Allow difficulty to set lives
+                        private     bool            isKillable = true;
+                        private     float           rekillTime;             //Stores when player will be killable again
+                        private     float           zOffset;                //Player position relative to camera
+                        public      Color           invunColour;
+                        private     Color           invunColour2 = new Color(255,255,0,100);
 
-    public GameObject PREFAB_DeathFX;
+                        public      GameObject      PREFAB_DeathFX;
+    [Range(0.5f, 10)]   public      float           invunTime = 2f;
+
+    [Range(0, 10)]       public      float           flashRate = 4f; //Rate of flashing per second
 
     // Start is called before the first frame update
     void Start() {
         
         playerMesh = GetComponent<MeshRenderer>();
+        scoreBoard = FindObjectOfType<ScoreBoard>();
+        myMat = GetComponent<MeshRenderer>().materials[0];
+        baseColour = myMat.color;
+        scoreBoard.ChangeLives(lives);
+        zOffset = transform.localPosition.z;
     }
 
     // Update is called once per frame
     void Update(){
-        
+        if (!isKillable) CheckKillableState();
     }
 
     private void OnTriggerEnter(Collider other) {
+        if (isKillable) {
+            if (lives > 0) {
+                lives--;
+                scoreBoard.ChangeLives(lives);
+                ResetPlayer();
+            } else {
+                PlayerDeath();
+            }
+        }
+    }
+
+    private void ResetPlayer() {
+        transform.localPosition = new Vector3 (0,0,zOffset);
+        transform.localRotation = Quaternion.Euler(Vector3.zero);
+        isKillable = false;
+        rekillTime = Time.time + invunTime;
+    }
+
+    private void CheckKillableState() {
+        if(Time.time >= rekillTime) {
+            isKillable = true;
+            myMat.color = baseColour;
+        } else {
+            int timeLeft = Mathf.FloorToInt((rekillTime - Time.time) / (1/flashRate)) % 2;
+            //Debug.Log("Flashing for " + (rekillTime - Time.time) + "s. Tleft: " + timeLeft);
+            myMat.color = timeLeft != 0 ? invunColour2 : baseColour;
+            /*
+        if(timeLeft == 0) {
+                myMat.color = baseColour;
+            } else {
+                myMat.color = invunColour;
+         }*/
+
+        }
+    }
+
+    private void PlayerDeath() {
         SendMessage("OnPlayerDeath");
         playerMesh.enabled = false;
         deathFX = (GameObject)Instantiate(PREFAB_DeathFX, transform.position, Quaternion.identity);
         deathFX.SetActive(true);
         Invoke("ReloadScene", levelLoadDelay);
     }
+
     private void ReloadScene() {
         SceneManager.LoadScene(1);
     }

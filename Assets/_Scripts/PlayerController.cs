@@ -41,7 +41,6 @@ public class PlayerController : MonoBehaviour {
             ProcessRotation();
             ProcessFiring();
         }
-        scoreBoard.ChangeMissiles(missiles);
     }
 
     private void ProcessRotation() {
@@ -99,8 +98,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void AttemptMissileFire() {
-        //Check player missile count
-        //If 0 then exit
+        if (missiles < 0) return;   //If no missiles then don't fire
+
         //Spawn missile 
         //Update scoreboard
         scoreBoard.ChangeMissiles(missiles);
